@@ -1,115 +1,94 @@
-/* General Styles */
 body {
   font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f9; /* Light gray background */
-  color: #333; /* Dark text color */
+  background-color: #f9f9f9;
 }
 
-/* Container */
 .dashboard-container {
   max-width: 1200px;
   margin: 20px auto;
   padding: 20px;
-  background-color: #ffffff; /* White background */
+  background-color: white;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Header */
-.dashboard-container h1 {
-  text-align: center;
-  color: #1e90ff; /* Bright blue color */
-  margin-bottom: 30px;
+h1,
+h2 {
+  color: #333;
 }
 
-/* Section Styles */
 .section {
   margin-bottom: 30px;
 }
 
-.section h2 {
-  font-size: 1.5rem;
-  color: #444;
-  border-bottom: 2px solid #1e90ff; /* Blue underline */
-  padding-bottom: 5px;
-  margin-bottom: 15px;
-}
-
-/* Manga List */
-.section ul {
-  list-style: none;
-  padding: 0;
-}
-
-.section ul li {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 10px;
-  background-color: #f9f9f9; /* Light gray background for items */
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.section ul li:hover {
-  background-color: #e3f2fd; /* Light blue on hover */
-}
-
-/* Search Bar */
-.section div {
+.search-bar {
   display: flex;
-  align-items: center;
-  margin-bottom: 15px;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.section input[type="text"] {
+.search-bar input {
   flex: 1;
   padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ddd;
   border-radius: 5px;
-  margin-right: 10px;
-  outline: none;
+  border: 1px solid #ddd;
 }
 
-.section input[type="text"]:focus {
-  border-color: #1e90ff;
-  box-shadow: 0 0 5px rgba(30, 144, 255, 0.5); /* Blue glow on focus */
-}
-
-.section button {
-  padding: 10px 15px;
-  font-size: 1rem;
-  background-color: #1e90ff; /* Bright blue button */
+.search-bar button {
+  padding: 10px 20px;
+  background-color: #1e90ff;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
 }
 
-.section button:hover {
-  background-color: #0056b3; /* Darker blue on hover */
+.search-bar button:hover {
+  background-color: #0056b3;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .dashboard-container {
-    padding: 15px;
-  }
+.manga-results,
+.manga-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
 
-  .section h2 {
-    font-size: 1.2rem;
-  }
+.manga-card,
+.manga-item {
+  background-color: #fff;
+  border-radius: 8px;
+  text-align: center;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
 
-  .section ul li {
-    font-size: 0.9rem;
-  }
+.manga-card:hover,
+.manga-item:hover {
+  transform: scale(1.05);
+}
 
-  .section button {
-    font-size: 0.9rem;
-    padding: 8px 12px;
-  }
+.manga-card img,
+.manga-item img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  height: 300px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  background-color: #1e90ff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
 }

@@ -94,20 +94,171 @@ router.get("/dashboard", authMiddleware, async (req, res) => {
 
 // Protected Route: Add to favorites
 router.post("/favorites", authMiddleware, async (req, res) => {
-  const { mangaId } = req.body;
+  const { mangaId, title } = req.body;
   const userId = req.user.id;
 
-  if (!mangaId) {
-    return res.status(400).json({ message: "Manga ID is required" });
-  }
-
   try {
-    const favorite = new Favorites({ userId, mangaId });
-    await favorite.save();
+    const existing = await Favorites.findOne({ userId, mangaId });
+    if (existing) {
+      return res.status(400).json({ message: "Manga already in favorites" });
+    }
+
+    const newFavorite = new Favorites({ userId, mangaId, title });
+    await newFavorite.save();
+
     res.status(201).json({ message: "Added to favorites" });
   } catch (error) {
     console.error("Error adding to favorites:", error);
     res.status(500).json({ message: "Error adding to favorites" });
+  }
+});
+
+// Add to library
+router.post("/library", authMiddleware, async (req, res) => {
+  const { mangaId, title } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const existing = await Library.findOne({ userId, mangaId });
+    if (existing) {
+      return res.status(400).json({ message: "Manga already in library" });
+    }
+
+    const newLibraryItem = new Library({ userId, mangaId, title });
+    await newLibraryItem.save();
+
+    res.status(201).json({ message: "Added to library" });
+  } catch (error) {
+    console.error("Error adding to library:", error);
+    res.status(500).json({ message: "Error adding to library" });
+  }
+});
+
+router.delete("/favorites/:mangaId", authMiddleware, async (req, res) => {
+  const { mangaId } = req.params;
+  const userId = req.user.id;
+
+  console.log("Favorites Deletion Request:", { userId, mangaId });
+
+  try {
+    const result = await Favorites.deleteOne({ userId, mangaId });
+    console.log("Deletion Result:", result);
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Manga not found in favorites" });
+    }
+    res.status(200).json({ message: "Removed from favorites" });
+  } catch (error) {
+    console.error("Error removing from favorites:", error);
+    res.status(500).json({ message: "Failed to remove from favorites" });
+  }
+});
+
+router.delete("/library/:mangaId", authMiddleware, async (req, res) => {
+  const { mangaId } = req.params;
+  const userId = req.user.id;
+
+  console.log("Library Deletion Request:", { userId, mangaId });
+
+  try {
+    const result = await Library.deleteOne({ userId, mangaId });
+    console.log("Deletion Result:", result);
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Manga not found in library" });
+    }
+    res.status(200).json({ message: "Removed from library" });
+  } catch (error) {
+    console.error("Error removing from library:", error);
+    res.status(500).json({ message: "Failed to remove from library" });
+  }
+});
+
+router.put("/library/progress", authMiddleware, async (req, res) => {
+  const { mangaId, progress } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const result = await Library.updateOne(
+      { userId, _id: mangaId },
+      { $set: { progress } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Manga not found in library" });
+    }
+
+    res.status(200).json({ message: "Progress updated" });
+  } catch (error) {
+    console.error("Error updating progress:", error);
+    res.status(500).json({ message: "Failed to update progress" });
+  }
+});
+router.post("/reviews", authMiddleware, async (req, res) => {
+  const { mangaId, review, rating } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const result = await Library.updateOne(
+      { userId, _id: mangaId },
+      { $set: { review, rating } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ message: "Manga not found in library" });
+    }
+
+    res.status(200).json({ message: "Review submitted" });
+  } catch (error) {
+    console.error("Error submitting review:", error);
+    res.status(500).json({ message: "Failed to submit review" });
+  }
+});
+
+router.post("/review", authMiddleware, async (req, res) => {
+  const { mangaId, rating, review } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+    const existingReview = user.reviews.find((r) => r.mangaId === mangaId);
+
+    if (existingReview) {
+      existingReview.rating = rating;
+      existingReview.review = review;
+    } else {
+      user.reviews.push({ mangaId, rating, review });
+    }
+
+    await user.save();
+    res.status(200).json({ message: "Review saved successfully" });
+  } catch (error) {
+    console.error("Error saving review:", error);
+    res.status(500).json({ message: "Failed to save review" });
+  }
+});
+
+// Get review for a manga
+router.get("/review/:mangaId", authMiddleware, async (req, res) => {
+  const { mangaId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the review for the specified manga
+    const review = user.reviews.find((r) => r.mangaId === mangaId);
+
+    if (!review) {
+      return res.status(404).json({ message: "Review not found" });
+    }
+
+    res.status(200).json(review);
+  } catch (error) {
+    console.error("Error fetching review:", error);
+    res.status(500).json({ message: "Failed to fetch review" });
   }
 });
 
