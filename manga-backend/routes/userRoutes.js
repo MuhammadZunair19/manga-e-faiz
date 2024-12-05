@@ -262,4 +262,51 @@ router.get("/review/:mangaId", authMiddleware, async (req, res) => {
   }
 });
 
+router.put("/progress", authMiddleware, async (req, res) => {
+  const { mangaId, progress } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const mangaProgress = user.progress.find((p) => p.mangaId === mangaId);
+
+    if (mangaProgress) {
+      mangaProgress.progress = progress;
+    } else {
+      user.progress.push({ mangaId, progress });
+    }
+
+    await user.save();
+    res.status(200).json({ message: "Progress updated successfully" });
+  } catch (error) {
+    console.error("Error updating progress:", error);
+    res.status(500).json({ message: "Failed to update progress" });
+  }
+});
+
+router.get("/progress/:mangaId", authMiddleware, async (req, res) => {
+  const { mangaId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const mangaProgress = user.progress.find((p) => p.mangaId === mangaId);
+
+    res.status(200).json(mangaProgress || { progress: 0 });
+  } catch (error) {
+    console.error("Error fetching progress:", error);
+    res.status(500).json({ message: "Failed to fetch progress" });
+  }
+});
+
 module.exports = router;

@@ -1,0 +1,19 @@
+.share-manga-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.share-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: white;
+  background-color: #1e90ff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.share-button:hover {
+  background-color: #0056b3;
+}

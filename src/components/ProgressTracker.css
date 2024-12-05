@@ -1,0 +1,42 @@
+.progress-tracker {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.progress-tracker h3 {
+  margin-bottom: 10px;
+}
+
+.progress-tracker p {
+  margin: 5px 0;
+}
+
+.progress-input {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.progress-input input {
+  width: 60px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.progress-input button {
+  padding: 5px 10px;
+  background-color: #1e90ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.progress-input button:hover {
+  background-color: #0056b3;
+}

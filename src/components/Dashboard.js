@@ -3,6 +3,9 @@ import { searchManga, getCoverImageUrl } from "../services/mangadexService";
 import RatingAndReview from "./RatingAndReview"; // Import RatingAndReview component
 import axios from "axios";
 import "./Dashboard.css";
+import ShareManga from "./ShareManga";
+import FilterComponent from "./FilterComponent";
+//import ProgressTracker from "./ProgressTracker";
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -12,6 +15,12 @@ const Dashboard = () => {
   const [selectedManga, setSelectedManga] = useState(null);
   const [mangaDetails, setMangaDetails] = useState(null);
   const [userReview, setUserReview] = useState({ rating: 0, review: "" });
+  //const [userProgress, setUserProgress] = useState(0);
+  const [filteredManga, setFilteredManga] = useState([]); // Manga filtered by search + filter
+  const [selectedFilters, setSelectedFilters] = useState({
+    genre: "",
+    author: "",
+  });
 
   // Fetch Dashboard Data
   useEffect(() => {
@@ -39,10 +48,36 @@ const Dashboard = () => {
     try {
       const results = await searchManga(searchTerm);
       setMangaResults(results);
+      applyCombinedFilters(results, selectedFilters); // Apply filters after search
     } catch (error) {
       console.error("Error searching manga:", error);
       alert("Failed to fetch manga data. Please try again.");
     }
+  };
+
+  // Apply Filters (Genre + Author)
+  const applyFilters = (filters) => {
+    setSelectedFilters(filters); // Update selected filters
+    applyCombinedFilters(mangaResults, filters); // Apply filters to existing search results
+  };
+
+  // Apply Combined Filters (Search + Filters)
+  const applyCombinedFilters = (mangaList, filters) => {
+    const { genre, author } = filters;
+
+    const filtered = mangaList.filter((manga) => {
+      const matchesGenre =
+        !genre ||
+        manga.attributes.tags.some((tag) => tag.attributes.name.en === genre);
+      const matchesAuthor =
+        !author ||
+        manga.relationships.some(
+          (rel) => rel.type === "author" && rel.attributes.name === author
+        );
+      return matchesGenre && matchesAuthor;
+    });
+
+    setFilteredManga(filtered);
   };
 
   // Open Manga Details Modal
@@ -51,8 +86,15 @@ const Dashboard = () => {
       const detailsResponse = await axios.get(
         `https://api.mangadex.org/manga/${mangaId}`
       );
+      //   const progressResponse = await axios.get(
+      //     `http://localhost:5000/api/users/progress/${mangaId}`,
+      //     {
+      //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      //     }
+      //   );
       setMangaDetails(detailsResponse.data.data);
-
+      setSelectedManga(mangaId);
+      // setUserProgress(progressResponse.data.progress || 0);
       try {
         const reviewResponse = await axios.get(
           `http://localhost:5000/api/users/review/${mangaId}`,
@@ -80,6 +122,7 @@ const Dashboard = () => {
     setSelectedManga(null);
     setMangaDetails(null);
     setUserReview({ rating: 0, review: "" });
+    // setUserProgress(0);
   };
 
   // Add Manga to Favorites
@@ -151,6 +194,10 @@ const Dashboard = () => {
     <div className="dashboard-container">
       <h1>Manga Dashboard</h1>
 
+      {/* Filter Section */}
+      <FilterComponent onFilterChange={applyFilters} />
+
+      {/* Search Section */}
       {/* Search Section */}
       <div className="section">
         <h2>Search Manga</h2>
@@ -164,7 +211,7 @@ const Dashboard = () => {
           <button onClick={handleSearch}>Search</button>
         </div>
         <div className="manga-results">
-          {mangaResults.map((manga) => (
+          {filteredManga.map((manga) => (
             <div
               key={manga.id}
               className="manga-card"
@@ -190,12 +237,25 @@ const Dashboard = () => {
             {mangaDetails.attributes.description?.en ||
               "No description available"}
           </p>
+          {/*Progress Tracker Component */}
+          {/* <ProgressTracker
+            mangaId={selectedManga}
+            totalChapters={mangaDetails.attributes.chapterCount || 0}
+            existingProgress={userProgress}
+            onProgressUpdate={(newProgress) => setUserProgress(newProgress)}
+          /> */}
+          {/*Rating Component */}
           <RatingAndReview
             mangaId={selectedManga}
             existingRating={userReview.rating}
             existingReview={userReview.review}
             onReviewSubmitted={(newReview) => setUserReview(newReview)}
           />
+          {/*Share Component */}
+          <ShareManga manga={mangaDetails} />
+          <button onClick={closeMangaDetails} className="close-modal-button">
+            Close
+          </button>
           <button onClick={() => handleAddToFavorites(mangaDetails)}>
             Add to Favorites
           </button>

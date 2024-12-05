@@ -1,0 +1,26 @@
+.filter-component {
+  margin: 20px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.filter-component h3 {
+  margin-bottom: 10px;
+}
+
+.filter-dropdown {
+  margin-bottom: 15px;
+}
+
+.filter-dropdown label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.filter-dropdown select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

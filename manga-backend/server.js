@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const geminiRoutes = require("./routes/geminiRoutes");
 
 const userRoutes = require("./routes/userRoutes");
 
@@ -10,7 +11,7 @@ const app = express();
 // Middleware
 app.use(cors());
 app.use(express.json()); // Built-in body parser
-D;
+
 // Routes
 app.use("/api/users", userRoutes); // Prefix routes with /api/users
 
@@ -33,6 +34,8 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Something went wrong!" });
 });
+
+app.use("/api", geminiRoutes);
 
 // Start the Server
 const PORT = process.env.PORT || 5000;
