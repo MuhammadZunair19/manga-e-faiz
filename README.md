@@ -1,4 +1,4 @@
-# This is Feature B's Change
+# ERROR1
 # Getting Started with Create React App
 # TESTING THE PROJECT FOR TODAY'S GIT LAB
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
