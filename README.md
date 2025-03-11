@@ -1,16 +1,23 @@
+<<<<<<< HEAD
+# ERROR1
+=======
+#not something i would call an ERROR
+>>>>>>> feature-branch-B
 # Getting Started with Create React App
 # TESTING THE PROJECT FOR TODAY'S GIT LAB
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# This is Feature B's Change
 
 ## Available Scripts
 
 In the project directory, you can run:
 
 ### `npm start`
-
+lets try conflicting
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
+# This is Feature A's Change
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
@@ -28,6 +35,7 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
 
 ### `npm run eject`
 
